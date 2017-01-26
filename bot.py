@@ -12,6 +12,7 @@ def handle(msg):
     if content_type == "photo":
     	# Get the photo file_id
     	print msg['photo'][-1]['file_id']
+    	bot.download_file(msg['photo'][-1]['file_id'], './file.jpg')
     	bot.sendPhoto(chat_id,msg['photo'][-1]['file_id'])
 
 TOKEN = "301610458:AAENDRBlt0BUulCFdoA0DqMxAt-shWYORfo"  # get token from command-line
