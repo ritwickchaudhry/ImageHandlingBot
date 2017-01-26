@@ -8,7 +8,9 @@ def handle(msg):
 
     stickerID = "BQADAgADPwADyIsGAAGI1S2AmQ002AI"
     if content_type == 'text':
-        bot.sendSticker(chat_id, stickerID)
+    	msg_text = msg['text'].lower()
+
+        # bot.sendSticker(chat_id, stickerID)
     if content_type == "photo":
     	# Get the photo file_id
     	print msg['photo'][-1]['file_id']
