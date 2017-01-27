@@ -1,0 +1,6 @@
+
+Get your Cimpress API Key:
+Go to Cimpress Designer Configuration Utility ﴾https://developer.cimpress.io/account/dcl﴿
+Select Create new API key
+Set your web host properly in the allowed origins ﴾websites﴿
+Make sure you include the protocol when whitelisting your domain ﴾example: http:// or https://﴿
