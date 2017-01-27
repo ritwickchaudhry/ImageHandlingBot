@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta charset="utf-8">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+      <link href="/static/merchant.css" rel="stylesheet" />
+      <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+      <script type="application/javascript" src="/build/dcl.js" charset="utf-8"></script>
+      <script type="application/javascript" src="/static/merchant-ui-tabs.js" charset="utf-8"></script>
+      <title>Design Client Library Dev</title>
+  </head>
+  <body>
+      <div class="dcl dcl-container flexrows">
+          <div class="flexlanes">
+              <div class="content-panel__tabs">
+                  <a href="#" class="tab-item__link js-tab is-active" data-tab="images">
+
+                      <svg class="tab-item__link__icon tab-item__link__icon--images" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25">
+                          <path class="tab-item__link__icon--images__path-1" d="M15.1,9.6c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S14,9.6,15.1,9.6z M18.3,18.4L16.2,16l-2.4,2.1l-3-7.6
+  l-3.2,7.3l-2.4-2.6l-1.8,2.7l-0.8-0.6l2.6-3.7L7.4,16l3.5-8.1l3.4,8.5l2.1-1.8l2.1,2.5l1.7-1.3l1.2,0.9l-0.6,0.8L20.1,17L18.3,18.4z
+  "/>
+                      </svg>
+
+                      <span class="tab-item__link__description">Images</span>
+                  </a>
+                  <a href="#" class="tab-item__link js-tab" data-tab="text">
+
+                      <svg class="tab-item__link__icon tab-item__link__icon--text" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="25" height="25">
+                          <path class="tab-item__link__icon--text__path-1" d="M16.7,23H7.3v-2.3l2.4-0.2l0.2-0.2V3.4H5.9L5.7,3.6L5.2,6.8H2.5V1h19v5.8h-2.7l-0.5-3.2l-0.2-0.2H14v16.9
+  l0.2,0.2l2.5,0.2V23z"/>
+                      </svg>
+
+                      <span class="tab-item__description">Text</span>
+                  </a>
+                  <a href="#" class="tab-item__link js-tab" data-tab="shapes">
+
+                      <svg class="tab-item__link__icon tab-item__link__icon--shapes" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="25" height="25">
+                          <path class="tab-item__link__icon--shapes__path-1" d="M22,14.1h-4.2c-0.9-1.9-2.8-3.1-5-3.2V5H22V14.1z"/>
+                          <path class="tab-item__link__icon--shapes__path-2" d="M12.3,11L8.1,3L2,14.1h5.7C8.6,12.3,10.3,11.1,12.3,11z"/>
+                          <path class="tab-item__link__icon--shapes__path-3" d=" M16.7,14.1c-0.8-1.2-2.2-2.1-3.7-2.1c0,0-0.1,0-0.1,0c0,0,0,0,0,0c-1.6,0-3.1,0.9-3.9,2.1c-0.4,0.7-0.7,1.5-0.7,2.4
+  c0,2.5,2.1,4.5,4.6,4.5c2.5,0,4.6-2,4.6-4.5C17.4,15.6,17.1,14.8,16.7,14.1z"/>
+
+
+                      </svg>
+
+                      <span class="tab-item__description">Shapes</span>
+                  </a>
+                  <div class="tab-item__indicator"></div>
+              </div>
+              <div class="flexrows content-panel js-content-panels">
+
+                  <div class="content-panel__images js-content-panel js-content-panel-images is-active">
+                      <div class="info-panel">
+                          <div class="button-bar">
+                              <div class="upload-button-container"></div>
+                              <p class="info-panel-text">Tip: Drag and drop anywhere on the screen to upload an image</p>
+                          </div>
+                      </div>
+                      <div class="upload-list-container scrollbox"></div>
+                  </div>
+
+                  <div class="content-panel__text js-content-panel js-content-panel-text">
+                      <div class="info-panel">
+                          <div class="button-bar">
+                              <div class="add-text-container"></div>
+                              <p class="info-panel-text">Tip: Any text you add to your design is shown here</p>
+                          </div>
+                      </div>
+                      <div class="edit-text-container scrollbox">
+                      </div>
+                  </div>
+
+                  <div class="content-panel__shapes js-content-panel js-content-panel-shapes">
+                      <div class="info-panel shapes-panel">
+                          <div class="button-bar">
+                              <p class="info-panel-text">Tip: Drag and Drop shapes</p>
+                          </div>
+                      </div>
+                      <div class="add-shapes-container scrollbox"></div>
+                  </div>
+
+              </div>
+              <div class="workarea flexrows">
+                  <div class="workarea__action-bar">
+                      <div class="dcl-canvas-history-container"></div>
+                      <div class="dcl-zoom-container"></div>
+                      <div class="dcl-document-rotate-container"></div>
+                  </div>
+                  <div class="workarea__canvas-controls">
+                      <div class="workarea__canvases scrollbox" id="canvases"></div>
+                      <div class="workarea__change-scene"></div>
+                  </div>
+              </div>
+          </div>
+          <div class="workarea__footer-bar">
+              <div class="pdf-button-container"> </div>
+          </div>
+      </div>
+
+      <script type="application/javascript">
+          // Document reference
+          //var documentReference = "https://uds.documents.cimpress.io/merchants/internal-test-merchant/documents/3dd6b43b-4bd9-4309-b75f-a1cd74cfc7d2/docref?token=a2016ee8f3999feaf9368d4b14d1c7e9";
+          //var template = "https://uds.documents.cimpress.io/merchants/adfs%7Cjaanderson%40cimpress.com/documents/2ca150ba-2680-4950-bdde-58d70878100b/docref?token=92327d793df425401db53445cd640569";
+
+          var configuration = {
+              services: {
+                  clients: {
+                      upload: {
+                          merchantId: 'default'
+                      }
+                  }
+              },
+
+              ui: {
+                  zoomStrategy: {
+                      initialHeight: .45
+                  },
+
+                  widgets: {
+                      addShape: {
+                          enabled: true,
+                          containerElement: '.add-shapes-container'
+                      },
+                      addText: {
+                          enabled: true,
+                          containerElement: '.add-text-container'
+                      },
+                      canvasHistory: {
+                          enabled: true,
+                          containerElement: '.dcl-canvas-history-container'
+                      },
+                      canvasSwitcher: {
+                          enabled: true,
+                          containerElement: '.workarea__change-scene'
+                      },
+                      editText: {
+                          enabled: true,
+                          containerElement: '.edit-text-container'
+                      },
+                      generatePdf: {
+                          enabled: true,
+                          containerElement: '.pdf-button-container'
+                      },
+                      previewDocument: {
+                          enabled: true,
+                          containerElement: '.pdf-button-container'
+                      },
+                      saveDocument: {
+                          enabled: true,
+                          containerElement: '.pdf-button-container'
+                      },
+                      uploadButton: {
+                          enabled: true,
+                          containerElement: '.upload-button-container'
+                      },
+                      uploadList: {
+                          enabled: true,
+                          containerElement: '.upload-list-container'
+                      },
+                      zoom: {
+                          enabled: true,
+                          containerElement: '.dcl-zoom-container'
+                      }
+                  }
+              }
+          };
+
+          function getSku() {
+              var sku = "VIP-45215";
+              location.search.substr(1).split('&').forEach(function(item) {
+                  var param = item.split('=');
+                  if (param[0] === 'sku') {
+                      sku = param[1];
+                  }
+              });
+
+              return sku;
+          };
+
+          var options = {
+              mcpSku: getSku(),
+              configuration: configuration
+          };
+
+          window.merchant.initTabs();
+
+          dcl.start(options).catch(function(error) { console.error(error) });
+      </script>
+  </body>
+</html>
