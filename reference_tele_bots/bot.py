@@ -1,6 +1,7 @@
 import sys
 import time
 import telepot
+sys.path.append('../../ChatterBot')
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
 from chatterbot import ChatBot
 # Boolean to check if message is sent
@@ -103,6 +104,7 @@ def handle(msg):
     )
     # Train based on the english corpus
     chatbot.train("chatterbot.corpus.english.conversations")
+    chatbot.train("chatterbot.corpus.english.humor")
     # No specific state. General questions then
     if msg_sent != 1:
         if content_type == 'text':
