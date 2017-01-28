@@ -1,6 +1,7 @@
 import sys
 import time
 import telepot
+sys.path.append('../../ChatterBot')
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
 from chatterbot import ChatBot
 # Boolean to check if message is sent
@@ -103,6 +104,7 @@ def handle(msg):
     )
     # Train based on the english corpus
     chatbot.train("chatterbot.corpus.english.conversations")
+    chatbot.train("chatterbot.corpus.english.humor")
     # No specific state. General questions then
     if msg_sent != 1:
         if content_type == 'text':
@@ -111,10 +113,6 @@ def handle(msg):
             if msg_text in intro_reply:
                 init_greeting = "Hi " + msg['from']['first_name'] + ". How are you doing? But wait, let me introduce myself.\n\n"
                 bot.sendMessage(chat_id,init_greeting + intro)
-	    elif msg_text != "/upload_pic" and msg_text != "/suggest_product":
-		var = chatbot.get_response(msg_text)
-		print var
-		bot.sendMessage(chat_id,str(var))
             elif msg_text == "/upload_pic":
                 upload_pic_msg_init = "Please upload a picture here"
                 bot.sendMessage(chat_id,upload_pic_msg_init)
@@ -123,6 +121,10 @@ def handle(msg):
                 upload_pic_msg_init = "Please upload a picture here for which you want to know a suitable product"
                 bot.sendMessage(chat_id,upload_pic_msg_init)
                 chat_state_dict[chat_id] = "upload_product_picture"
+            else:
+                var = chatbot.get_response(msg_text)
+                # print var
+                bot.sendMessage(chat_id,str(var))
 
     # if content_type == "photo":
     # 	# Get the photo file_id
