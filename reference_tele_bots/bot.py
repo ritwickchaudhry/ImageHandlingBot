@@ -63,7 +63,7 @@ def imageTags(filepath):
 	listOfTagDicts = json.loads(response.content)["results"][0]["tags"]
 	listOfTags = []
 
-	for i in range (0,5):
+	for i in range (0,10):
 		listOfTags.append(listOfTagDicts[i]["tag"])
 	return listOfTags
 
@@ -108,17 +108,19 @@ def sendPic(path, user_id):
 	data = {'chat_id' : user_id}
 	r= requests.post(url, files=files, data=data)
 
-def ai_answer(question) :
+def ai_answer(question, chat_id) :
+	global bot
 	global chatbot
 	answer = chatbot.get_response(question)
 	if answer.confidence < 0.5 : 
 		print "My confidence level is "+str(answer.confidence)
+		bot.sendMessage(chat_id,dontknow)
 		answer = dontknow + ". My human counterpart says: "
 		true_answer = raw_input("Please answer :"+question + '\n')
 		chatbot.set_trainer(ListTrainer)
 		chatbot.train([question,true_answer])
 		print "I have trained myself for it!!"
-		return dontknow+true_answer
+		return true_answer
 	return str(answer)
 
 def idle_action(msg,content_type, chat_type, chat_id):
@@ -147,7 +149,7 @@ def idle_action(msg,content_type, chat_type, chat_id):
 				bot.sendMessage(chat_id,upload_pic_msg_init)
 				chat_state_dict[chat_id] = "upload_product_picture"
 			else:
-				bot.sendMessage(chat_id,ai_answer(msg_text))
+				bot.sendMessage(chat_id,ai_answer(msg_text,chat_id))
 				chat_state_dict[chat_id] = "idle"
 
 def new_user(msg,content_type, chat_type, chat_id):
@@ -161,32 +163,45 @@ def finalproduct(location):
 	listofTags = imageTags(location)
 
 	match_dict = {}
-	match_dict[couple_match] = 0
-	match_dict[family_match] = 0
-	match_dict[celebration_match] = 0
+	match_dict["couple_match"] = 0
+	match_dict["family_match"] = 0
+	match_dict["celebration_match"] = 0
 
 	for tag in listofTags:
 		if tag in couple_tags:
-			match_dict[couple_match] += 1
+			match_dict["couple_match"] += 1
 		elif tag in family_tags:
-			match_dict[family_match] += 1
-		elif tag in celebration:
-			match_dict[celebration_match] += 1
+			match_dict["family_match"] += 1
+		elif tag in celebration_tags:
+			match_dict["celebration_match"] += 1
 
-	sorted(match_dict, key=match_dict.__getitem__)
-	print match_dict
+	match_dict2 = sorted(match_dict, key=match_dict.__getitem__)
+	match_category = match_dict2[-1]
+	if(match_dict[match_category] == 0):
+		# Default Case	
+		defaultString = "I would probably suggest that you get this printed on a \n"
+		print listofTags
+		if("capital" in listofTags):
+			return defaultString + "Mug"
+		elif ("text" in listofTags):
+			return defaultString + "Shirt"
+		elif ("sign" in listofTags):
+			return defaultString + "Shirt"
+		elif ("protective covering" in listofTags):
+			return defaultString + "Laptop Skins"
+		else:
+			return defaultString + "Laptop Skins"
 
-	print listofTags
-	if("capital" in listofTags):
-		return "Mug"
-	elif ("text" in listofTags):
-		return "Shirt"
-	elif ("sign" in listofTags):
-		return "Shirt"
-	elif ("protective covering" in listofTags):
-		return "Laptop Skins"
 	else:
-		return "Laptop Skins"
+		if(match_category == "couple_match"):
+			# Couple
+			return "I think you are trying to ink memories of your loved one " + "\xF0\x9F\x98\x8D" + " \n I would probably recommend a \n \t PILLOW"
+		elif(match_category == "family_match"):
+			# Family
+			return "I think you are trying to capture your beautiful family " + "\xF0\x9F\x98\x8D" + " \n If you have more pics, maybe you can make a \n DESK CALENDAR"
+		else:
+			# Celebration
+			return "Congratulations ! on the special occasion. I think you are  probably looking for a \n INVITATION CARD"
 
 def textToImage(text, user_id):
 	font_id = ['69296','8461','7445','6729','41072','30714','22892','4423','7299','31750','12057','11257','11159','11738','37448','10533']
@@ -245,7 +260,7 @@ def handle(msg):
 	# First check the state. If no state, then proceed towards general chat.
 	if chat_id in chat_state_dict.keys():
 		print chat_state_dict[chat_id]
-		print "printed your state bitch"
+		print "printed your state "
 		if chat_state_dict[chat_id] == "idle":
 			idle_action(msg,content_type,chat_type,chat_id)
 		elif chat_state_dict[chat_id] == "upload_text":
