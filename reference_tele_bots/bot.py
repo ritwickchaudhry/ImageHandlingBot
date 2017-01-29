@@ -12,6 +12,10 @@ import requests
 import json
 import random
 import pickle
+from PIL import Image, ImageEnhance
+from PIL import ImageOps
+from PIL import ImageFilter
+from shutil import copyfile
 
 # Boolean to check if message is sent
 msg_sent = 0
@@ -25,7 +29,7 @@ intro = "I am , a personalized chatbot from Cimpress. My existence rolls around 
 
 #initialise chatbot 
 chatbot = ChatBot('Andrew', trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer')
-chatbot.train("chatterbot.corpus.english.faqs")
+chatbot.train("chatterbot.corpus.english.faqs","chatterbot.corpus.english.conversations")
 dontknow = "Sorry, I don't know how to respond. Would engage human(oid)s ;)"
 # chatbotfaq = ChatBot('Symonds', trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer')
 # chatbotfaq
@@ -104,12 +108,12 @@ def ai_answer(question) :
 	answer = chatbot.get_response(question)
 	if answer.confidence < 0.5 : 
 		print "My confidence level is "+str(answer.confidence)
-		answer = dontknow
+		answer = dontknow + ". My human counterpart says: "
 		true_answer = raw_input("Please answer :"+question + '\n')
 		chatbot.set_trainer(ListTrainer)
 		chatbot.train([question,true_answer])
 		print "I have trained myself for it!!"
-		return true_answer
+		return dontknow+true_answer
 	return str(answer)
 
 def idle_action(msg,content_type, chat_type, chat_id):
@@ -150,6 +154,7 @@ def new_user(msg,content_type, chat_type, chat_id):
 
 def finalproduct(location):
 	listofTags = imageTags(location)
+	print listofTags
 	if("capital" in listofTags):
 		return "Mug"
 	elif ("text" in listofTags):
@@ -175,14 +180,41 @@ def textToImage(text, user_id):
 		f.close()
 		i += 1
 
+def colorenhancer(user_id, location):
+	image = Image.open(location)
+	contrast = ImageEnhance.Color(image)
+	finalImage = contrast.enhance(1.5)
+	finalImage.save(str(user_id)+'/enhanced.png')
+
+def contrastenhancer(user_id, location):
+	image = Image.open(location)
+	finalImage = ImageOps.autocontrast(image,cutoff=5)
+	finalImage.save(str(user_id)+'/enhanced.png')
+
+def edgeenhancer(user_id, location):
+	image = Image.open(location)
+	finalImage = image.filter(ImageFilter.EDGE_ENHANCE)
+	finalImage.save(str(user_id)+'/enhanced.png')
+
+
 def enhance(user_id,filter):
 	#to-do, save the image 'uploaded.png' as enhanced.png
-	os.rename(str(user_id)+'/uploaded.png',str(user_id)+'/enhanced.png')
+	# os.rename(str(user_id)+'/uploaded.png',str(user_id)+'/enhanced.png')
+	print filter
+	if (filter == "color enhancer"):
+		colorenhancer(user_id, str(user_id)+'/uploaded.png')
+	elif (filter == "contrast enhancer"):
+		contrastenhancer(user_id, str(user_id)+'/uploaded.png')
+	elif (filter == "edge enhancer"):
+		edgeenhancer(user_id, str(user_id)+'/uploaded.png')
+	else:
+		# os.rename(str(user_id)+'/uploaded.png',str(user_id)+'/enhanced.png')
+		copyfile(str(user_id)+'/uploaded.png', str(user_id)+'/enhanced.png')
 	pass
 
 def select_typo(user_id, index):
 	print "selecting typo function"
-	os.rename(str(user_id)+'/typo'+str(index)+'.png',str(user_id)+'/enhanced.png')
+	copyfile(str(user_id)+'/typo'+str(index)+'.png',str(user_id)+'/enhanced.png')
 
 def handle(msg):
 	global bot
@@ -225,7 +257,7 @@ def handle(msg):
 
 				remove_markup = ReplyKeyboardRemove()
 				bot.sendMessage(chat_id,toast,reply_markup=remove_markup)
-				bot.sendMessage(chat_id, "Based on the image features the best product is : " + str(final))
+				bot.sendMessage(chat_id, str(final))
 				select_typo(user_id,int(msg['text']))
 
 		elif chat_state_dict[chat_id] == "upload_picture":
@@ -246,7 +278,7 @@ def handle(msg):
 				else:
 					#give options for enhancing
 					enhance_prompt = "Please select an option for enhancing your image"
-					enhance_options = ReplyKeyboardMarkup(keyboard=[['Filter1', 'Filter2'],['Filter3', 'None'],],resize_keyboard=True)
+					enhance_options = ReplyKeyboardMarkup(keyboard=[['Color Enhancer', 'Contrast Enhancer'],['Edge Enhancer', 'Original'],],resize_keyboard=True)
 					bot.sendMessage(chat_id,enhance_prompt, reply_markup=enhance_options)
 					chat_state_dict[chat_id] = "enhance"
 
@@ -263,7 +295,7 @@ def handle(msg):
 					remove_markup = ReplyKeyboardRemove()
 					bot.sendMessage(chat_id,toast,reply_markup=remove_markup)
 					bot.sendMessage(chat_id,toast)
-					bot.sendMessage(chat_id, "Based on the image features the best product is : " + str(final))
+					bot.sendMessage(chat_id, str(final))
 				else:
 					enhance(user_id,option_selected)
 					pic_analyzed_msg = "I have enhanced the picture. Do have a look."
@@ -306,13 +338,13 @@ def handle(msg):
 					final = finalproduct(var)
 					toast = "Image successfully saved :)"
 					bot.sendMessage(chat_id,toast)
-					bot.sendMessage(chat_id, "Based on the image features the best product is : " + str(final))
+					bot.sendMessage(chat_id, str(final))
 				elif msg['text'].lower() == "no":
 					back_to_base_msg = "Oh. Well, I'll try to improve next time"
 					remove_markup = ReplyKeyboardRemove()
 					bot.sendMessage(chat_id,back_to_base_msg,reply_markup=remove_markup)
 					enhance_prompt = "Please select an option for enhancing your image"
-					enhance_options = ReplyKeyboardMarkup(keyboard=[['Filter1', 'Filter2'],['Filter3', 'None'],],resize_keyboard=True)
+					enhance_options = ReplyKeyboardMarkup(keyboard=[['Color Enhancer', 'Contrast Enhancer'],['Edge Enhancer', 'Original'],],resize_keyboard=True)
 					bot.sendMessage(chat_id,enhance_prompt, reply_markup=enhance_options)
 					chat_state_dict[chat_id] = "enhance"
 				else:
@@ -363,4 +395,4 @@ print ('Listening ...')
 
 # Keep the program running.
 while 1:
-	time.sleep(10)
+	time.sleep(1)
