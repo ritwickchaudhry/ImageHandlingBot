@@ -23,6 +23,11 @@ msg_sent = 0
 #dictionary for users' states
 chat_state_dict = {} #idle, upload_picture, is_uploading?,upload_pic_feedback, product_list_given
 
+# List of tags and responses for product suggestion
+couple_tags = ['couple','love']
+family_tags = ['family','together','happiness']
+celebration_tags = ['decoration','celebration']
+
 #string resources
 intro_reply = ["hi","hello","/start","hey"]
 intro = "I am , a personalized chatbot from Cimpress. My existence rolls around helping you build a product, customize it, place an order, track it and to answer any of the tiny doubts you have.\n\n1. /enhance_pic - I'll guide you how to upload a 'good' picture and make enhancements to it, if necessary\n2. /typography - I'll use my expertise to suggest you the product on which the image will suit the best\n3.  /faq - I'll answer your questions as these problems are faced commonly\nApart, if you want to ask anything other than this, I'll always be there to help you out."
@@ -154,6 +159,23 @@ def new_user(msg,content_type, chat_type, chat_id):
 
 def finalproduct(location):
 	listofTags = imageTags(location)
+
+	match_dict = {}
+	match_dict[couple_match] = 0
+	match_dict[family_match] = 0
+	match_dict[celebration_match] = 0
+
+	for tag in listofTags:
+		if tag in couple_tags:
+			match_dict[couple_match] += 1
+		elif tag in family_tags:
+			match_dict[family_match] += 1
+		elif tag in celebration:
+			match_dict[celebration_match] += 1
+
+	sorted(match_dict, key=match_dict.__getitem__)
+	print match_dict
+
 	print listofTags
 	if("capital" in listofTags):
 		return "Mug"
